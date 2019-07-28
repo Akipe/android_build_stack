@@ -4,3 +4,6 @@
 [submodule "utils/sdat2img"]
 	path = utils/sdat2img
 	url = https://github.com/xpirt/sdat2img.git
+[submodule "utils/simg2img"]
+	path = utils/simg2img
+	url = https://github.com/anestisb/android-simg2img.git
