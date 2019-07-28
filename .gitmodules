@@ -1,0 +1,3 @@
+[submodule "utils/abootimg"]
+	path = utils/abootimg
+	url = https://github.com/omicron-io/abootimg.git
