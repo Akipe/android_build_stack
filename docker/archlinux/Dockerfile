@@ -13,7 +13,7 @@ ENV \
     GID=1000 \
     # ccache specifics
     CCACHE_SIZE=50G \
-    CCACHE_DIR=/srv/ccache \
+    CCACHE_DIR=/android/ccache \
     USE_CCACHE=1 \
     CCACHE_COMPRESS=1 \
     # java
@@ -94,10 +94,12 @@ RUN sudo mkdir /android \
 WORKDIR /android
 
 # Configure Python version
-RUN virtualenv2 --system-site-packages venv \
+RUN sudo ln -s /usr/bin/python2 /usr/bin/python \
+    && virtualenv2 --system-site-packages venv \
 #    && ln -s /usr/lib/python2.7/* /android/venv/lib/python2.7/ \
     && source venv/bin/activate
 
+RUN sudo archlinux-java set java-8-openjdk
 
 COPY ./archlinux/entrypoint.sh /
 
