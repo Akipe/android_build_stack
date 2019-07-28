@@ -1,3 +1,6 @@
 [submodule "utils/abootimg"]
 	path = utils/abootimg
 	url = https://github.com/omicron-io/abootimg.git
+[submodule "utils/sdat2img"]
+	path = utils/sdat2img
+	url = https://github.com/xpirt/sdat2img.git
