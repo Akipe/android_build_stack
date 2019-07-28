@@ -7,3 +7,7 @@
 [submodule "utils/simg2img"]
 	path = utils/simg2img
 	url = https://github.com/anestisb/android-simg2img.git
+[submodule "utils/android_system_core"]
+	path = utils/android_system_core
+	url = https://github.com/LineageOS/android_system_core.git
+	branch = lineage-16.0
