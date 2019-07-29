@@ -11,3 +11,6 @@
 	path = utils/android_system_core
 	url = https://github.com/LineageOS/android_system_core.git
 	branch = lineage-16.0
+[submodule "utils/android_blob_utility"]
+	path = utils/android_blob_utility
+	url = https://github.com/Akipe/Android-Blob-Utility.git
