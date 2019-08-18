@@ -1,21 +1,33 @@
 .PHONY: build run stop shell build-abootimg build-simg2img help
 .DEFAULT_GOAL= help
 
-init: git-install-submodule build-docker-image
+init: git-install-submodule build-docker-image_ubuntu
 	mkdir ./bin
 
-update: git-update-submodule build-docker-image
+update: git-update-submodule build-docker-image_ubuntu
 
-build: build-docker-image
+build: docker-build-image_ubuntu
 
 run:
-	sudo docker run --name docker_android_builder -v ${BUILD_PATH}:/android -d docker_android_builder
+	sudo docker run --name docker_android_builder_ubuntu -v ${BUILD_PATH}:/android -d docker_android_builder_ubuntu
 
-stop:
-	sudo docker stop --name docker_android_builder
+stop: docker-stop docker-rm
 
 shell: 
-	sudo docker exec -it docker_android_builder bash
+	sudo docker exec -it docker_android_builder_ubuntu bash
+
+docker-stop:
+	sudo docker container stop docker_android_builder_ubuntu
+
+docker-rm:
+	sudo docker container rm -f docker_android_builder_ubuntu
+
+docker-build-image_archlinux:
+	sudo docker build -t docker_android_builder -f ./docker/archlinux/Dockerfile .
+
+docker-build-image_ubuntu:
+	sudo docker build -t docker_android_builder_ubuntu -f ./docker/ubuntu/Dockerfile .
+
 
 git-install-submodule:
 	git submodule update --init
@@ -23,8 +35,6 @@ git-install-submodule:
 git-update-submodule:
 	git submodule update --remote
 
-build-docker-image:
-	sudo docker build -t docker_android_builder -f ./docker/archlinux/Dockerfile .
 
 # build-abootimg: git-install-submodule
 # 	cd utils/abootimg && $(MAKE)
