@@ -101,7 +101,7 @@ RUN sudo ln -s /usr/bin/python2 /usr/bin/python \
 
 RUN sudo archlinux-java set java-8-openjdk
 
-COPY ./archlinux/entrypoint.sh /
+COPY ./docker/archlinux/entrypoint.sh /
 
 RUN sudo chmod +x /entrypoint.sh \
     && sudo chown -R build:build /entrypoint.sh
