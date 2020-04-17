@@ -1,4 +1,4 @@
-.PHONY: build run stop shell build-abootimg build-simg2img help
+.PHONY: build run start stop shell build-abootimg build-simg2img help
 .DEFAULT_GOAL= help
 
 init: git-install-submodule build-docker-image_ubuntu
@@ -10,6 +10,9 @@ build: docker-build-image_ubuntu
 
 run:
 	sudo docker run --name docker_android_builder_ubuntu -v ${BUILD_PATH}:/android -d docker_android_builder_ubuntu
+
+start:
+	sudo docker start docker_android_builder_ubuntu
 
 stop: docker-stop docker-rm
 
