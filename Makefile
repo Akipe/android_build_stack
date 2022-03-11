@@ -1,35 +1,51 @@
 .PHONY: build run start stop shell build-abootimg build-simg2img help
 .DEFAULT_GOAL= help
 
-init: git-install-submodule build-docker-image_ubuntu
+init: git-install-submodule build-docker-image
 	mkdir ./bin
 
-update: git-update-submodule build-docker-image_ubuntu
+update: docker-image-rm docker-image-update #git-update-submodule
 
-build: docker-build-image_ubuntu
+build: docker-image-build
 
-run:
-	sudo docker run --name docker_android_builder_ubuntu -v ${BUILD_PATH}:/android -d docker_android_builder_ubuntu
+init-start: docker-container-init-start
 
-start:
-	sudo docker start docker_android_builder_ubuntu
+start: docker-container-start
 
-stop: docker-stop docker-rm
+shell: docker-container-shell
 
-shell: 
-	sudo docker exec -it docker_android_builder_ubuntu bash
+stop: docker-container-stop
 
-docker-stop:
-	sudo docker container stop docker_android_builder_ubuntu
+rm: docker-container-rm
 
-docker-rm:
-	sudo docker container rm -f docker_android_builder_ubuntu
 
-docker-build-image_archlinux:
-	sudo docker build -t docker_android_builder -f ./docker/archlinux/Dockerfile .
+docker-container-init-start:
+	docker run \
+		--name docker_android_builder_${OS}_${RELEASE} \
+		-v ${BUILD_PATH}:/android \
+		-d docker_android_builder_${OS}_${RELEASE}
 
-docker-build-image_ubuntu:
-	sudo docker build -t docker_android_builder_ubuntu -f ./docker/ubuntu/Dockerfile .
+docker-container-start:
+	docker start docker_android_builder_${OS}_${RELEASE}
+
+docker-container-shell:
+	docker exec -it docker_android_builder_${OS}_${RELEASE} bash
+
+docker-container-stop:
+	docker container stop docker_android_builder_${OS}_${RELEASE}
+
+docker-container-rm:
+	docker container rm -f docker_android_builder_${OS}_${RELEASE}
+
+docker-image-update: docker-container-rm docker-image-build
+
+docker-image-rm:
+	docker image rm docker_android_builder_${OS}_${RELEASE}
+
+docker-image-build:
+	docker build \
+		-t docker_android_builder_${OS}_${RELEASE} \
+		-f ./docker/${OS}/${RELEASE}/Dockerfile .
 
 
 git-install-submodule:

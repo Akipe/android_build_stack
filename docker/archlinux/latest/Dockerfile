@@ -2,7 +2,7 @@
 # - https://github.com/greyltc/docker-archlinux-aur/blob/master/add-aur.sh
 # - https://android.googlesource.com/platform/build/+/master/tools/docker
 
-FROM archlinux/base
+FROM archlinux:base-devel
 
 MAINTAINER Julien Milletre Akipe <code.julien@milletre.fr>
 
@@ -28,19 +28,55 @@ ENV \
 ######
 
 # Enable Multilib repository
-RUN sed -i "/\[multilib\]/,/Include/"'s/^#//' /etc/pacman.conf
+#RUN sed -i "/\[multilib\]/,/Include/"'s/^#//' /etc/pacman.conf
+#RUN sed -i 's/[community]/[community]\\nInclude = /etc/pacman.d/mirrorlist\\n[multilib]"/g' /etc/pacman.conf \
+#RUN echo "[multilib]\nInclude = /etc/pacman.d/mirrorlist\n" > /etc/pacman.conf
+COPY ./docker/archlinux/pacman.conf /etc/pacman.conf
 
-# Upgrade Archlinux and install devel packages
+RUN cat /etc/pacman.conf
+
+# Install packages
 RUN pacman -Syyu --noprogressbar --noconfirm --needed \
         base-devel \
-        multilib-devel \
+        bc \
+        bison \
+        ccache \
+        curl \
+        flex \
+        gcc \
+        gcc-multilib \
         git \
-        sudo \
-        pacman \
+        gnupg \
         go \
+        gperf \
+        gradle \
+        imagemagick \
+        inetutils \
+        java-environment \
+        jdk8-openjdk \
+        lib32-gcc-libs \
+        lib32-ncurses \
+        lib32-readline \
+        lib32-zlib \
+        libxslt \
+        lzop \
+        maven \
+        multilib-devel \
+        ncurses \
+        perl-switch \
+        pngcrush \
+        repo \
+        rsync \
+        schedtool \
+        sdl \
+        squashfs-tools \
+        sudo \
+        ttf-dejavu \
+        unzip \
         vim \
-        nano \
-        vi
+        wxgtk2 \
+        zip \
+        zlib
 
 
 ######
@@ -60,16 +96,15 @@ RUN groupadd --gid $GID --force build \
 
 # Use all possible cores for subsequent package builds &&
 #   don't compress the packages built here
-RUN sed -i 's,#MAKEFLAGS="-j2",MAKEFLAGS="-j$(nproc)",g' /etc/makepkg.conf \
-    && sed -i "s,PKGEXT='.pkg.tar.xz',PKGEXT='.pkg.tar',g" /etc/makepkg.conf
+RUN sed -i 's,#MAKEFLAGS="-j2",MAKEFLAGS="-j$(nproc)",g' /etc/makepkg.conf
+    #&& sed -i "s,PKGEXT='.pkg.tar.xz',PKGEXT='.pkg.tar',g" /etc/makepkg.conf
 
 USER build
 
 # Install yay
 RUN git clone https://aur.archlinux.org/yay.git /tmp/yay \
-    && cd /tmp/yay \
-    && makepkg \
-    && sudo pacman -U *.pkg.tar --noprogressbar --noconfirm \
+    && (cd /tmp/yay && makepkg) \
+    && sudo pacman -U /tmp/yay/*.pkg.tar.zst --noprogressbar --noconfirm \
     && rm -rf /tmp/yay
 
 
@@ -79,13 +114,11 @@ RUN git clone https://aur.archlinux.org/yay.git /tmp/yay \
 
 # Install dependecies for building Android
 RUN yay -S --noprogressbar --needed --noconfirm \
-        aosp-devel \
-        lineageos-devel \
-        jdk7-openjdk \
-        jdk8-openjdk \
-        repo \
-        maven \
-        gradle
+        lib32-ncurses5-compat-libs \
+        ncurses5-compat-libs \
+        xml2
+        #aosp-devel \
+        #lineageos-devel \
 
 # Create working directory
 RUN sudo mkdir /android \
@@ -94,10 +127,10 @@ RUN sudo mkdir /android \
 WORKDIR /android
 
 # Configure Python version
-RUN sudo ln -s /usr/bin/python2 /usr/bin/python \
-    && virtualenv2 --system-site-packages venv \
+#RUN sudo ln -s /usr/bin/python2 /usr/bin/python \
+#    && virtualenv2 --system-site-packages venv \
 #    && ln -s /usr/lib/python2.7/* /android/venv/lib/python2.7/ \
-    && source venv/bin/activate
+#    && source venv/bin/activate
 
 RUN sudo archlinux-java set java-8-openjdk
 

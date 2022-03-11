@@ -1,10 +1,11 @@
+# todo : https://android.googlesource.com/platform/build/+/master/tools/docker/Dockerfile
+
 # android-build-image with Ubuntu
 # - https://nathanpfry.com/how-to-setup-ubuntu-18-04-lts-bionic-beaver-to-compile-android-roms/
 
 FROM ubuntu:18.04
 
 MAINTAINER Julien Milletre Akipe <code.julien@milletre.fr>
-
 
 ENV \
     # user
@@ -26,13 +27,62 @@ ENV \
 ### Init Archlinux
 ######
 
-# Upgrade Archlinux and install devel packages
+# Install the build packages
 RUN apt-get update \
-    && apt-get remove -y \
+    && apt-get full-upgrade --yes \
+    && apt-get remove --yes \
         openjdk-* \
         icedtea-* \
-    && apt-get install -y sudo zsh \
-        git bc rsync imagemagick ccache lzop bison gperf build-essential zip curl zlib1g-dev g++-multilib python-networkx libxml2-utils bzip2 libbz2-dev libghc-bzlib-dev squashfs-tools pngcrush liblz4-tool optipng libc6-dev-i386 gcc-multilib libssl-dev gnupg flex lib32ncurses5-dev x11proto-core-dev libx11-dev lib32z1-dev libgl1-mesa-dev xsltproc unzip python-pip python-dev libffi-dev libxml2-dev libxslt1-dev libjpeg8-dev openjdk-8-jdk
+    && apt-get install --yes \
+        bc \
+        bison \
+        build-essential \
+        bzip2 \
+        ccache \
+        curl \
+        flex \
+        g++-multilib \
+        gcc-multilib \
+        git \
+        gnupg \
+        gperf \
+        imagemagick \
+        lib32ncurses5-dev \
+        lib32readline-dev \
+        lib32z1-dev \
+        libbz2-dev \
+        libc6-dev-i386 \
+        libffi-dev \
+        libghc-bzlib-dev \
+        libgl1-mesa-dev \
+        libjpeg8-dev \
+        liblz4-tool \
+        libncurses5 \
+        libncurses5-dev \
+        libsdl1.2-dev \
+        libssl-dev \
+        libwxgtk3.0-dev \
+        libx11-dev \
+        libxml2 \
+        libxml2-dev \
+        libxml2-utils \
+        libxslt1-dev \
+        lzop \
+        openjdk-8-jdk \
+        optipng \
+        pngcrush \
+        python-dev \
+        python-networkx \
+        python-pip \
+        rsync \
+        schedtool \
+        squashfs-tools \
+        sudo \
+        unzip \
+        x11proto-core-dev \
+        xsltproc \
+        zip \
+        zlib1g-dev
 
 RUN curl http://commondatastorage.googleapis.com/git-repo-downloads/repo > /usr/bin/repo \
     && chmod a+x /usr/bin/repo
